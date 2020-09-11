@@ -17,3 +17,24 @@ class User(db.Model):
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+
+class Puzzle(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    # name_of_puzzle = db.Column(db.String(50), unique=True, nullable=False)
+    # picture_of_puzzle = db.Column(db.LargeBinary)
+    # picture_of_box = db.Column(db.LargeBinary) 
+    # number_of_pieces = db.Column(db.Integer, unique=False, nullable=False) 
+    # age_range = db.Column(db.String(10), unique=False, nullable=False)
+    # category = db.Column(db.String(50), unique=False, nullable=False)
+    # owner_id = db.Column(db.Integer, unique=False, nullable=False)
+    # borrower = db.Column(db.Integer, primary_key=True)
+
+    # def __repr__(self):
+    #     return '<Puzzle / %r>' % self.name_of_puzzle
+
+    # def serialize(self):
+    #     return {
+    #         "id": self.id,
+    #         "name_of_puzzle": self.name_of_puzzle,
+    #         # do not serialize the password, its a security breach
+    #     }
