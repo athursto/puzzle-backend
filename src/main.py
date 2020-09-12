@@ -39,6 +39,18 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+@app.route('/order', methods=['POST'])
+def order_product():
+
+    response_body = {
+        "msg": "Hello, this is your ORDER /user response "
+    }
+
+    return jsonify(response_body), 200
+
+#this should send the post information to USPS 
+#will need to use address + name + weight
+
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
