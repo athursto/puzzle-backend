@@ -31,13 +31,62 @@ def sitemap():
     return generate_sitemap(app)
 
 @app.route('/user', methods=['GET'])
-def handle_hello():
+def all_users():
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
+    users = User.query.all()
+    all_users = list(map(lambda x: x.serialize(), users))
 
-    return jsonify(response_body), 200
+    return jsonify(all_users), 200
+
+@app.route('/user', methods=['POST'])
+def create_user():
+
+    request_body_user = request.get_json()
+
+    newuser = User(full_name=request_body_user["full_name"], address=request_body_user["address"], city=request_body_user["city"], state=request_body_user["state"], zip_code=request_body_user["zip_code"], email=request_body_user["email"], username=request_body_user["username"], password=request_body_user["password"])
+    db.session.add(newuser)
+    db.session.commit()
+
+    return jsonify(request_body_user), 200  
+
+
+@app.route('/user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+
+    request_body_user = request.get_json()
+
+    user1 = User.query.get(user_id)
+    if user1 is None:
+        raise APIException('User not found', status_code=404)
+
+    if "full_name" in request_body_user:
+        user1.full_name = request_body_user["full_name"]
+    if "address" in request_body_user:
+        user1.address = request_body_user["address"]
+    if "city" in request_body_user:
+        user1.city = request_body_user["city"] 
+    if "state" in request_body_user:
+        user1.state = request_body_user["state"]               
+    if "zip_code" in request_body_user:
+        user1.zip_code = request_body_user["zip_code"]    
+    if "email" in request_body_user:
+        user1.email = request_body_user["email"]
+    if "username" in request_body_user:
+        user1.username = request_body_user["username"]
+    db.session.commit()
+
+    return jsonify(request_body_user), 200  
+
+@app.route('/user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+
+    user1 = User.query.get(user_id)
+    if user1 is None:
+        raise APIException('User not found', status_code=404)
+    db.session.delete(user1)
+    db.session.commit()
+
+    return jsonify("ok"), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
