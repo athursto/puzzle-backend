@@ -88,14 +88,14 @@ def delete_user(user_id):
 
     return jsonify("ok"), 200
 
-@app.route('/order', methods=['POST'])
-def order_product():
+# @app.route('/order', methods=['POST'])
+# def order_product():
 
-    response_body = {
-        "msg": "Hello, this is your ORDER /user response "
-    }
+#     response_body = {
+#         "msg": "Hello, this is your ORDER /user response "
+#     }
 
-    return jsonify(response_body), 200
+#     return jsonify(response_body), 200
 
 #this should send the post information to USPS 
 #will need to use address + name + weight
