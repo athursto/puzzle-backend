@@ -23,6 +23,8 @@ MIGRATE = Migrate(app, db)
 db.init_app(app)
 CORS(app)
 setup_admin(app)
+app.config['JWT_SECRET_KEY'] = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'  # Change this!
+jwt = JWTManager(app)
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
@@ -35,6 +37,7 @@ def sitemap():
     return generate_sitemap(app)
 
 @app.route('/user', methods=['GET'])
+@jwt_required
 def all_users():
 
     users = User.query.all()
@@ -91,6 +94,33 @@ def delete_user(user_id):
     db.session.commit()
 
     return jsonify("ok"), 200
+
+@app.route('/login', methods=['POST'])
+def login():
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    params = request.get_json()
+    username = params.get('username', None)
+    password = params.get('password', None)
+
+    if not username:
+        return jsonify({"msg": "Missing username parameter"}), 400
+    if not password:
+        return jsonify({"msg": "Missing password parameter"}), 400
+
+    userquery = User.query.filter_by(username = username).first()
+    if userquery is None:
+        return jsonify({"msg": "user not found"}), 401
+    if userquery.validate_password(password) is False:
+        return jsonify({"msg": "invalid password"}), 401
+
+    # if username != "test" or password != "test":
+    #     return jsonify({"msg": "Bad username or password"}), 401
+
+    # Identity can be any data that is json serializable
+    ret = {'jwt': create_jwt(identity=username)}
+    return jsonify(ret), 200    
 
 # @app.route('/order', methods=['POST'])
 # def order_product():
