@@ -13,7 +13,8 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=True, default=True)
-    # order_id = db.relationship('Order') #adding in order relationship
+    order_id = db.relationship('Order', backref = 'user') #adding in order relationship
+    puzzles_owned = db.relationship('Puzzle', backref='user') #adding in puzzle relationship 
 
 
     def __repr__(self):
@@ -38,10 +39,10 @@ class Puzzle(db.Model):
     number_of_pieces = db.Column(db.Integer, unique=False, nullable=False) 
     age_range = db.Column(db.String(10), unique=False, nullable=False)
     category = db.Column(db.String(50), unique=False, nullable=False)
-    owner_id = db.Column(db.Integer, unique=False, nullable=False)
     borrower = db.Column(db.Integer, primary_key=True)
     is_available = db.Column(db.Boolean(), unique=False, nullable=False)
-    # order_id = db.relationship('Order') #adding in order relationship
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    order_id = db.relationship('Order', backref='puzzle')
 
 
     # def __repr__(self):
@@ -51,18 +52,18 @@ class Puzzle(db.Model):
         return {
         "id": self.id,
         "name_of_puzzle": self.name_of_puzzle,
-        # "order_id": list(map(lambda x: x.serialize(), self.order_id))
+        "user": {"name": self.User.full_name,
+                    "id": self.User.id}
          # do not serialize the password, its a security breach
                 }
 
-# class Order(db.Model):
-#     order_id = db.Column(db.Integer, primary_key=True)
-#     address = db.Column(db.String(80), unique=False, nullable=False)
-#     weight = db.Column(db.Float, unique=False, nullable=False)
-#     payment_id = db.Column(db.String(80), unique=True, nullable=False)
-#     puzzle_id = db.Column(db.String, unique=True, nullable=False)
-#     user_id = db.Column(db.Integer, db.ForeignKey("User.id"))
-#     puzzle_id = db.Column(db.Integer, db.ForeignKey("Puzzle.id"))
+class Order(db.Model):
+    order_id = db.Column(db.Integer, primary_key=True)
+    address = db.Column(db.String(80), unique=False, nullable=False)
+    weight = db.Column(db.Float, unique=False, nullable=False)
+    payment_id = db.Column(db.String(80), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    puzzle_id = db.Column(db.Integer, db.ForeignKey("puzzle.id"))
 
 #     def __repr__(self):
 #         return '<User %r>' % self.username

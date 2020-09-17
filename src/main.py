@@ -9,12 +9,17 @@ from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User
+from flask_jwt_simple import (
+    JWTManager, jwt_required, create_jwt, get_jwt_identity
+)
 #from models import Person
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_CONNECTION_STRING')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'  # Change this!
+jwt = JWTManager(app)
 MIGRATE = Migrate(app, db)
 db.init_app(app)
 CORS(app)
@@ -88,14 +93,18 @@ def delete_user(user_id):
 
     return jsonify("ok"), 200
 
-# @app.route('/order', methods=['POST'])
-# def order_product():
+@app.route('/order/<puzzle_id>', methods=['POST'])
+@jwt_required
+#def protected():
+    # Access the identity of the current user with get_jwt_identity
+    #return jsonify({'hello_from': get_jwt_identity()}), 200
+def order_product(puzzle_id):
 
-#     response_body = {
-#         "msg": "Hello, this is your ORDER /user response "
-#     }
+    response_body = {
+                "msg": "Hello, this is your ORDER /user response "
+     }
 
-#     return jsonify(response_body), 200
+    return jsonify("order complete"), 200
 
 #this should send the post information to USPS 
 #will need to use address + name + weight
