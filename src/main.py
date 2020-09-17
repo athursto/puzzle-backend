@@ -122,7 +122,7 @@ def get_puzzle():
 
 #     return jsonify(response_body), 200
 
-@app.route('/user', methods=['POST'])
+@app.route('/puzzle', methods=['POST'])
 def create_puzzle():
 
     request_body_puzzle = request.get_json()
@@ -147,6 +147,17 @@ def edit_puzzle():
     }
 
     return jsonify(response_body), 200    
+
+@app.route('/puzzle/<int:puzzle_id>', methods=['DELETE'])
+def delete_puzzle(puzzle_id):
+
+    user1 = User.query.get(puzzle_id)
+    if puzzle1 is None:
+        raise APIException('Puzzle not found', status_code=404)
+    db.session.delete(puzzle1)
+    db.session.commit()
+
+    return jsonify("ok"), 200
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
