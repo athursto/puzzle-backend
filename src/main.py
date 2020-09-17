@@ -8,10 +8,11 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Puzzle
 from flask_jwt_simple import (
     JWTManager, jwt_required, create_jwt, get_jwt_identity
-    )
+)
+
 #from models import Person
 
 app = Flask(__name__)
@@ -132,6 +133,50 @@ def login():
 
 #this should send the post information to USPS 
 #will need to use address + name + weight
+
+@app.route('/puzzle', methods=['GET'])
+def get_puzzle():
+
+    response_body = {
+        "msg": "Puzzle user endpoint"
+    }
+
+    return jsonify(response_body), 200
+
+# @app.route('/puzzle', methods=['POST'])
+# def create_puzzle():
+
+#     response_body = {
+#         "msg": "Puzzle upload endpoint"
+#     }
+
+#     return jsonify(response_body), 200
+
+@app.route('/user', methods=['POST'])
+def create_puzzle():
+
+    request_body_puzzle = request.get_json()
+
+    newpuzzle = Puzzle(name_of_puzzle=request_body_puzzle["name_of_puzzle"], 
+    picture_of_puzzle=request_body_puzzle["picture_of_puzzle"], 
+    picture_of_box=request_body_puzzle["picture_of_box"], 
+    number_of_pieces=request_body_puzzle["number_of_pieces"], 
+    age_range=request_body_puzzle["age_range"], 
+    category=request_body_puzzle["category"], 
+    owner_id=request_body_puzzle["owner_id"])
+    db.session.add(newpuzzle)
+    db.session.commit()
+
+    return jsonify(request_body_puzzle), 200 
+
+@app.route('/puzzle', methods=['PUT'])
+def edit_puzzle():
+
+    response_body = {
+        "msg": "Puzzle user edit endpoint"
+    }
+
+    return jsonify(response_body), 200    
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
