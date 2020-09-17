@@ -19,11 +19,20 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+    def validate_password(self, password):
+        if self.password != password:
+            return False
+
+        return True
+
     def serialize(self):
         return {
             "id": self.id,
             "full_name": self.full_name,
             "email": self.email,
+            "username": self.username,
+           
+
             # do not serialize the password, its a security breach
             # "order_id": list(map(lambda x: x.serialize(), self.order_id))
         }
