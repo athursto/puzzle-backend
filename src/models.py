@@ -20,11 +20,20 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+    def validate_password(self, password):
+        if self.password != password:
+            return False
+
+        return True
+
     def serialize(self):
         return {
             "id": self.id,
             "full_name": self.full_name,
             "email": self.email,
+            "username": self.username,
+           
+
             # do not serialize the password, its a security breach
             # "order_id": list(map(lambda x: x.serialize(), self.order_id))
         }
@@ -43,11 +52,30 @@ class Puzzle(db.Model):
     is_available = db.Column(db.Boolean(), unique=False, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     order_id = db.relationship('Order', backref='puzzle')
+    #owner_id = db.Column(db.Integer, unique=False, nullable=False) **delete this
+    #is_available = db.Column(db.Integer, primary_key=True)
+    #borrower = db.Column(db.Integer, primary_key=True)
+    #is_available = db.Column(db.LargeBinary (), unique=False, nullable=False)
+    # order_id = db.relationship('Order') #adding in order relationship
 
 
-    # def __repr__(self):
-    #     return '<Puzzle / %r>' % self.name_of_puzzle
+    def __repr__(self):
+        return '<Puzzle / %r>' % self.name_of_puzzle
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name_of_puzzle": self.name_of_puzzle,
+            "picture_of_puzzle": self.picture_of_puzzle,
+            "picture_of_box": self.picture_of_box,
+            "number_of_pieces": self.number_of_pieces,
+            "age_range": self.age_range,
+            "category": self.category,
+            "owner_id": self.owner_id,
+            # "is_available": self.is_available
+
+            # do not serialize the password, its a security breach
+        }
     def serialize(self):
         return {
         "id": self.id,
