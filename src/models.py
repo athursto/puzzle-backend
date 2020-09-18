@@ -93,14 +93,14 @@ class Order(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     puzzle_id = db.Column(db.Integer, db.ForeignKey("puzzle.id"))
 
-#     def __repr__(self):
-#         return '<User %r>' % self.username
+    def __repr__(self):
+        return '<Order %r>' % self.order_info
 
-#     def serialize(self):
-#         return {
-#             "id": self.id,
-#             #"email": self.email,
-#             # do not serialize the password, its a security breach
-#             "address": self.address,
-#             "order_id": self.order_id
-#         }
+    def serialize(self):
+        return {
+             "id": self.id,
+             #"email": self.email,
+            # do not serialize the password, its a security breach
+             "address": self.address,
+             "order_id": self.order_id
+         }
