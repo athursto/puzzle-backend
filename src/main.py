@@ -39,7 +39,6 @@ def sitemap():
     return generate_sitemap(app)
 
 @app.route('/user', methods=['GET'])
-@jwt_required
 def all_users():
 
     users = User.query.all()
@@ -167,13 +166,16 @@ def create_puzzle():
 
     request_body_puzzle = request.get_json()
 
-    newpuzzle = Puzzle(name_of_puzzle=request_body_puzzle["name_of_puzzle"], 
+    newpuzzle = Puzzle(
+    name_of_puzzle=request_body_puzzle["name_of_puzzle"], 
     picture_of_puzzle=request_body_puzzle["picture_of_puzzle"], 
     picture_of_box=request_body_puzzle["picture_of_box"], 
     number_of_pieces=request_body_puzzle["number_of_pieces"], 
     age_range=request_body_puzzle["age_range"], 
     category=request_body_puzzle["category"], 
-    owner_id=request_body_puzzle["owner_id"])
+    owner_id=request_body_puzzle["owner_id"],
+    is_available=request_body_puzzle["is_available"]
+    )
     db.session.add(newpuzzle)
     db.session.commit()
 
