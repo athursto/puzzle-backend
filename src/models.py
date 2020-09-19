@@ -48,7 +48,7 @@ class Puzzle(db.Model):
     number_of_pieces = db.Column(db.Integer, unique=False, nullable=False) 
     age_range = db.Column(db.String(10), unique=False, nullable=False)
     category = db.Column(db.String(50), unique=False, nullable=False)
-    borrower = db.Column(db.Integer, primary_key=True)
+    borrower = db.Column(db.Integer)
     is_available = db.Column(db.Boolean(), unique=False, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     order_id = db.relationship('Order', backref='puzzle')
