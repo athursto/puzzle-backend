@@ -44,8 +44,8 @@ class User(db.Model):
 class Puzzle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name_of_puzzle = db.Column(db.String(50), unique=True, nullable=False)
-    picture_of_puzzle = db.Column(db.String(50),  nullable=False)
-    picture_of_box = db.Column(db.String(50),  nullable=False) 
+    picture_of_puzzle = db.Column(db.String(10000))
+    picture_of_box = db.Column(db.String(10000)) 
     number_of_pieces = db.Column(db.Integer, unique=False, nullable=False) 
     age_range = db.Column(db.String(10), unique=False, nullable=False)
     category = db.Column(db.String(50), unique=False, nullable=False)
