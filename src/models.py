@@ -14,10 +14,10 @@ class User(db.Model):
   username = db.Column(db.String(80), unique=True, nullable=False)
   password = db.Column(db.String(80), unique=False, nullable=False)
   is_active = db.Column(db.Boolean(), unique=False, nullable=True, default=True)
-  orders = db.relationship('Order', backref = 'user') #adding in order relationship
-#   puzzles_owned_id = db.Column(db.Integer, db.ForeignKey('puzzle.id'),
-#         nullable=False) #one to one relationship
-#   puzzles_owned = db.relationship('Puzzle', backref='user') #adding in puzzle relationship 
+
+  #relationships
+  orders = db.relationship('Order', backref='user') #adding in order relationship
+  puzzles_owned = db.relationship('Puzzle', backref='user') #adding in puzzle relationship 
 
 
 
@@ -48,7 +48,7 @@ class User(db.Model):
 class Puzzle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name_of_puzzle = db.Column(db.String(50), unique=True, nullable=False)
-    picture_of_puzzle = db.Column(db.LargeBinary,nullable=True)
+    #picture_of_puzzle = db.Column(db.LargeBinary,nullable=True)
     picture_of_box = db.Column(db.String(50),  nullable=False) 
     number_of_pieces = db.Column(db.Integer, unique=False, nullable=False) 
     age_range = db.Column(db.String(10), unique=False, nullable=False)
@@ -57,10 +57,10 @@ class Puzzle(db.Model):
 
     #relationships
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id'))
     order = db.relationship('Order', backref='puzzle')
-    borrower_id = db.Column(db.Integer, db.ForeignKey('user.id')) #one to one relationship
-    # borrower = db.relationship('User', uselist=False, backref='Puzzle')
+    #borrower_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
+    #need to make a separate table referencing borrowers...maybe....
+
 
     
 
@@ -96,8 +96,11 @@ class Order(db.Model):
     address = db.Column(db.String(80), unique=False, nullable=False)
     weight = db.Column(db.Float, unique=False, nullable=False)
     payment_id = db.Column(db.String(80), unique=True, nullable=False)
+    
+
+    #relationships
+    puzzle_id = db.Column(db.Integer, db.ForeignKey('puzzle.id'))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    # puzzle_id = db.Column(db.Integer, db.ForeignKey("puzzle.id"))
 
     def __repr__(self):
         return '<Order %r>' % self.id
