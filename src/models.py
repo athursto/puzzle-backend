@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+import json
 
 db = SQLAlchemy()
 
@@ -13,8 +14,11 @@ class User(db.Model):
   username = db.Column(db.String(80), unique=True, nullable=False)
   password = db.Column(db.String(80), unique=False, nullable=False)
   is_active = db.Column(db.Boolean(), unique=False, nullable=True, default=True)
-  order_id = db.relationship('Order', backref = 'user') #adding in order relationship
+
+  #relationships
+  orders = db.relationship('Order', backref='user') #adding in order relationship
   puzzles_owned = db.relationship('Puzzle', backref='user') #adding in puzzle relationship 
+
 
 
   def __repr__(self):
@@ -50,13 +54,15 @@ class Puzzle(db.Model):
     age_range = db.Column(db.String(10), unique=False, nullable=False)
     category = db.Column(db.String(50), unique=False, nullable=False)
     is_available = db.Column(db.Boolean(), unique=False, nullable=False)
+
+    #relationships
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    # order_id = db.relationship('Order', backref='puzzle')
-    #owner_id = db.Column(db.Integer, unique=False, nullable=False) **delete this
-    #is_available = db.Column(db.Integer, primary_key=True)
-    #borrower = db.Column(db.Integer, primary_key=True)
-    #is_available = db.Column(db.LargeBinary (), unique=False, nullable=False)
-    # order_id = db.relationship('Order') #adding in order relationship
+    order = db.relationship('Order', backref='puzzle')
+    #borrower_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
+    #need to make a separate table referencing borrowers...maybe....
+
+
+    
 
 
     def __repr__(self):
@@ -66,8 +72,8 @@ class Puzzle(db.Model):
         return {
             "id": self.id,
             "name_of_puzzle": self.name_of_puzzle,
-            "picture_of_puzzle": self.picture_of_puzzle,
-            "picture_of_box": self.picture_of_box,
+            # "picture_of_puzzle": json.dumps(self.picture_of_puzzle).encode('utf-8'),
+            # "picture_of_box": self.picture_of_box,
             "number_of_pieces": self.number_of_pieces,
             "age_range": self.age_range,
             "category": self.category,
@@ -90,11 +96,14 @@ class Order(db.Model):
     address = db.Column(db.String(80), unique=False, nullable=False)
     weight = db.Column(db.Float, unique=False, nullable=False)
     payment_id = db.Column(db.String(80), unique=True, nullable=False)
+    
+
+    #relationships
+    puzzle_id = db.Column(db.Integer, db.ForeignKey('puzzle.id'))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    # puzzle_id = db.Column(db.Integer, db.ForeignKey("puzzle.id"))
 
     def __repr__(self):
-        return '<Order %r>' % self.order_info
+        return '<Order %r>' % self.id
 
     def serialize(self):
         return {
