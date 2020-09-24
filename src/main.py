@@ -146,11 +146,11 @@ def login():
 @app.route('/puzzle', methods=['GET'])
 def get_puzzle():
 
-    response_body = {
-        "msg": "Puzzle user endpoint"
-    }
+    all_puzzles = Puzzle.query.all()
+    all_puzzles = list(map(lambda x: x.serialize(), all_puzzles))
+    return jsonify(all_puzzles), 200
 
-    return jsonify(response_body), 200
+   
 
 # @app.route('/puzzle', methods=['POST'])
 # def create_puzzle():
@@ -168,8 +168,8 @@ def create_puzzle():
 
     newpuzzle = Puzzle(
     name_of_puzzle=request_body_puzzle["name_of_puzzle"], 
-    picture_of_puzzle=request_body_puzzle["picture_of_puzzle"], 
-    picture_of_box=request_body_puzzle["picture_of_box"], 
+    picture_of_puzzle=bytes(request_body_puzzle["picture_of_puzzle"], 'utf-8'), 
+    picture_of_box=bytes(request_body_puzzle["picture_of_box"], 'utf-8'), 
     number_of_pieces=request_body_puzzle["number_of_pieces"], 
     age_range=request_body_puzzle["age_range"], 
     category=request_body_puzzle["category"], 
