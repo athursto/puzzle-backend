@@ -48,13 +48,13 @@ class User(db.Model):
 class Puzzle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name_of_puzzle = db.Column(db.String(50), unique=True, nullable=False)
-    #picture_of_puzzle = db.Column(db.LargeBinary,nullable=True)
-    picture_of_box = db.Column(db.String(50),  nullable=False) 
+    picture_of_puzzle = db.Column(db.LargeBinary())
+    picture_of_box = db.Column(db.LargeBinary()) 
     number_of_pieces = db.Column(db.Integer, unique=False, nullable=False) 
     age_range = db.Column(db.String(10), unique=False, nullable=False)
     category = db.Column(db.String(50), unique=False, nullable=False)
     is_available = db.Column(db.Boolean(), unique=False, nullable=False)
-
+    
     #relationships
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     order = db.relationship('Order', backref='puzzle')
@@ -72,8 +72,9 @@ class Puzzle(db.Model):
         return {
             "id": self.id,
             "name_of_puzzle": self.name_of_puzzle,
+            # "picture_of_puzzle":json.dumps(self.picture_of_puzzle).encode('utf-8'),
             # "picture_of_puzzle": json.dumps(self.picture_of_puzzle).encode('utf-8'),
-            # "picture_of_box": self.picture_of_box,
+            # "picture_of_box": json.dumps(self.picture_of_box).encode('utf-8'),
             "number_of_pieces": self.number_of_pieces,
             "age_range": self.age_range,
             "category": self.category,
