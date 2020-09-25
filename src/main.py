@@ -128,7 +128,7 @@ def login():
     #     return jsonify({"msg": "Bad username or password"}), 401
 
     # Identity can be any data that is json serializable
-    ret = {'jwt': create_jwt(identity=username)}
+    ret = {'jwt': create_jwt(identity=username), 'user': userquery.serialize()}
     return jsonify(ret), 200    
 
 # @app.route('/order', methods=['POST'])
