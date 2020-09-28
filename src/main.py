@@ -46,18 +46,6 @@ def all_users():
 
     return jsonify(all_users), 200
 
-@app.route('/user', methods=['POST'])
-def create_user():
-
-    request_body_user = request.get_json()
-
-    newuser = User(full_name=request_body_user["full_name"], email=request_body_user["email"], username=request_body_user["username"], password=request_body_user["password"])
-    db.session.add(newuser)
-    db.session.commit()
-
-    return jsonify(request_body_user), 200  
-
-
 @app.route('/user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
 
@@ -68,11 +56,17 @@ def update_user(user_id):
         raise APIException('User not found', status_code=404)
 
     if "full_name" in request_body_user:
-        user1.full_name = request_body_user["full_name"]
-    if "address" in request_body_user:
-        user1.address = request_body_user["address"]    
+        user1.full_name = request_body_user["full_name"]  
     if "email" in request_body_user:
         user1.email = request_body_user["email"]
+    if "address" in request_body_user:
+        user1.address = request_body_user["address"]
+    if "city" in request_body_user:
+        user1.city = request_body_user["city"] 
+    if "state" in request_body_user:
+        user1.state = request_body_user["state"]
+    if "zip" in request_body_user:
+        user1.zip = request_body_user["zip"]               
     if "username" in request_body_user:
         user1.username = request_body_user["username"]
     db.session.commit()
@@ -98,6 +92,21 @@ def protected():
 
 #def order_product(puzzle_id):
 
+
+#Register Endpoint
+@app.route('/register', methods=['POST'])
+def register():
+
+    request_body_user = request.get_json()
+
+    newuser = User(full_name=request_body_user["full_name"], email=request_body_user["email"], address=request_body_user["address"],
+    city=request_body_user["city"], state=request_body_user["state"],
+    zip=request_body_user["zip"], username=request_body_user["username"], password=request_body_user["password"])
+    db.session.add(newuser)
+    db.session.commit()
+
+    return jsonify(request_body_user), 200  
+
 #Login Endpoint
 @app.route('/login', methods=['POST'])
 def login():
@@ -121,11 +130,11 @@ def login():
 
     
     # Identity can be any data that is json serializable
-    ret = {'jwt': create_jwt(identity=username)}
+    ret = {'jwt': create_jwt(identity=username), 'user': userquery.serialize()}
     return jsonify(ret), 200    
 
-# @app.route('/order', methods=['POST'])
-# def order_product():
+@app.route('/order', methods=['POST'])
+def order_product():
 
     response_body = {
                 "msg": "Hello, this is your ORDER /user response "
@@ -139,11 +148,11 @@ def login():
 @app.route('/puzzle', methods=['GET'])
 def get_puzzle():
 
-    response_body = {
-        "msg": "Puzzle user endpoint"
-    }
+    all_puzzles = Puzzle.query.all()
+    all_puzzles = list(map(lambda x: x.serialize(), all_puzzles))
+    return jsonify(all_puzzles), 200
 
-    return jsonify(response_body), 200
+   
 
 # @app.route('/puzzle', methods=['POST'])
 # def create_puzzle():
@@ -161,8 +170,8 @@ def create_puzzle():
 
     newpuzzle = Puzzle(
     name_of_puzzle=request_body_puzzle["name_of_puzzle"], 
-    picture_of_puzzle=request_body_puzzle["picture_of_puzzle"], 
-    picture_of_box=request_body_puzzle["picture_of_box"], 
+    picture_of_puzzle=bytes(request_body_puzzle["picture_of_puzzle"], 'utf-8'), 
+    picture_of_box=bytes(request_body_puzzle["picture_of_box"], 'utf-8'), 
     number_of_pieces=request_body_puzzle["number_of_pieces"], 
     age_range=request_body_puzzle["age_range"], 
     category=request_body_puzzle["category"], 

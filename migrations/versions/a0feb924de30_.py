@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 9b54264e3593
+Revision ID: a0feb924de30
 Revises: 
-Create Date: 2020-09-23 01:11:53.686230
+Create Date: 2020-09-25 12:48:24.734891
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9b54264e3593'
+revision = 'a0feb924de30'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,10 +21,6 @@ def upgrade():
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('full_name', sa.String(length=120), nullable=False),
-    sa.Column('address', sa.String(length=120), nullable=False),
-    sa.Column('city', sa.String(length=80), nullable=False),
-    sa.Column('state', sa.String(length=80), nullable=False),
-    sa.Column('zip_code', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
     sa.Column('username', sa.String(length=80), nullable=False),
     sa.Column('password', sa.String(length=80), nullable=False),
@@ -36,6 +32,8 @@ def upgrade():
     op.create_table('puzzle',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name_of_puzzle', sa.String(length=50), nullable=False),
+    sa.Column('picture_of_puzzle', sa.LargeBinary(), nullable=True),
+    sa.Column('picture_of_box', sa.LargeBinary(), nullable=True),
     sa.Column('number_of_pieces', sa.Integer(), nullable=False),
     sa.Column('age_range', sa.String(length=10), nullable=False),
     sa.Column('category', sa.String(length=50), nullable=False),
