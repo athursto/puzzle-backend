@@ -86,7 +86,8 @@ class Puzzle(db.Model):
     # def serialize(self):
     #     return {
     #     "id": self.id,
-    #     "name_of_puzzle": self.name_of_puzzle,
+    #  
+       "name_of_puzzle": self.name_of_puzzle,
     #     "user": {"name": self.User.full_name,
     #                 "id": self.User.id}
     #      # do not serialize the password, its a security breach

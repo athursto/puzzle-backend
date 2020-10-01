@@ -46,18 +46,6 @@ def all_users():
 
     return jsonify(all_users), 200
 
-@app.route('/user', methods=['POST'])
-def create_user():
-
-    request_body_user = request.get_json()
-
-    newuser = User(full_name=request_body_user["full_name"], address=request_body_user["address"], city=request_body_user["city"], state=request_body_user["state"], zip_code=request_body_user["zip_code"], email=request_body_user["email"], username=request_body_user["username"], password=request_body_user["password"])
-    db.session.add(newuser)
-    db.session.commit()
-
-    return jsonify(request_body_user), 200  
-
-
 @app.route('/user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
 
@@ -68,17 +56,17 @@ def update_user(user_id):
         raise APIException('User not found', status_code=404)
 
     if "full_name" in request_body_user:
-        user1.full_name = request_body_user["full_name"]
+        user1.full_name = request_body_user["full_name"]  
+    if "email" in request_body_user:
+        user1.email = request_body_user["email"]
     if "address" in request_body_user:
         user1.address = request_body_user["address"]
     if "city" in request_body_user:
         user1.city = request_body_user["city"] 
     if "state" in request_body_user:
-        user1.state = request_body_user["state"]               
-    if "zip_code" in request_body_user:
-        user1.zip_code = request_body_user["zip_code"]    
-    if "email" in request_body_user:
-        user1.email = request_body_user["email"]
+        user1.state = request_body_user["state"]
+    if "zip" in request_body_user:
+        user1.zip = request_body_user["zip"]               
     if "username" in request_body_user:
         user1.username = request_body_user["username"]
     db.session.commit()
@@ -104,6 +92,22 @@ def protected():
 
 #def order_product(puzzle_id):
 
+
+#Register Endpoint
+@app.route('/register', methods=['POST'])
+def register():
+
+    request_body_user = request.get_json()
+
+    newuser = User(full_name=request_body_user["full_name"], email=request_body_user["email"], address=request_body_user["address"],
+    city=request_body_user["city"], state=request_body_user["state"],
+    zip=request_body_user["zip"], username=request_body_user["username"], password=request_body_user["password"])
+    db.session.add(newuser)
+    db.session.commit()
+
+    return jsonify(request_body_user), 200  
+
+#Login Endpoint
 @app.route('/login', methods=['POST'])
 def login():
     if not request.is_json:
@@ -124,14 +128,15 @@ def login():
     if userquery.validate_password(password) is False:
         return jsonify({"msg": "invalid password"}), 401
 
-    # if username != "test" or password != "test":
-    #     return jsonify({"msg": "Bad username or password"}), 401
-
+    
     # Identity can be any data that is json serializable
     ret = {'jwt': create_jwt(identity=username), 'user': userquery.serialize()}
     return jsonify(ret), 200    
 
+
 @app.route('/order', methods=['GET'])
+
+@app.route('/order', methods=['POST'])
 def order_product():
 
     response_body = {
