@@ -6,11 +6,11 @@ db = SQLAlchemy()
 class User(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   full_name = db.Column(db.String(120), nullable=False)
-  email = db.Column(db.String(120), unique=True, nullable=False)
   address = db.Column(db.String(120), nullable=False)
   city = db.Column(db.String(80), nullable=False)
   state = db.Column(db.String(80), nullable=False)
-  zip = db.Column(db.String(80), nullable=False)
+  zip_code = db.Column(db.Integer, nullable=False)
+  email = db.Column(db.String(120), unique=True, nullable=False)
   username = db.Column(db.String(80), unique=True, nullable=False)
   password = db.Column(db.String(80), unique=False, nullable=False)
   is_active = db.Column(db.Boolean(), unique=False, nullable=True, default=True)
@@ -35,10 +35,6 @@ class User(db.Model):
           "id": self.id,
           "full_name": self.full_name,
           "email": self.email,
-          "address": self.address,
-          "city": self.city,
-          "state": self.state,
-          "zip": self.zip,
           "username": self.username,
           "puzzles_owned": list(map(lambda x: x.serialize(), self.puzzles_owned))
           
@@ -90,7 +86,8 @@ class Puzzle(db.Model):
     # def serialize(self):
     #     return {
     #     "id": self.id,
-    #     "name_of_puzzle": self.name_of_puzzle,
+    #  
+       "name_of_puzzle": self.name_of_puzzle,
     #     "user": {"name": self.User.full_name,
     #                 "id": self.User.id}
     #      # do not serialize the password, its a security breach
@@ -101,6 +98,7 @@ class Order(db.Model):
     address = db.Column(db.String(80), unique=False, nullable=False)
     weight = db.Column(db.Float, unique=False, nullable=False)
     payment_id = db.Column(db.String(80), unique=True, nullable=False)
+    # tracking_id= db.Column(db.Integer, unique=True, nullable=False)
     
 
     #relationships
@@ -116,5 +114,5 @@ class Order(db.Model):
              #"email": self.email,
             # do not serialize the password, its a security breach
              "address": self.address,
-             "order_id": self.order_id
+            #  "tracking_id": self.tracking_id
          }

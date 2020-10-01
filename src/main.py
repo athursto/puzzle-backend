@@ -133,6 +133,9 @@ def login():
     ret = {'jwt': create_jwt(identity=username), 'user': userquery.serialize()}
     return jsonify(ret), 200    
 
+
+@app.route('/order', methods=['GET'])
+
 @app.route('/order', methods=['POST'])
 def order_product():
 
