@@ -85,7 +85,8 @@ class Puzzle(db.Model):
     # def serialize(self):
     #     return {
     #     "id": self.id,
-    #     "name_of_puzzle": self.name_of_puzzle,
+    #  
+       "name_of_puzzle": self.name_of_puzzle,
     #     "user": {"name": self.User.full_name,
     #                 "id": self.User.id}
     #      # do not serialize the password, its a security breach
@@ -96,6 +97,7 @@ class Order(db.Model):
     address = db.Column(db.String(80), unique=False, nullable=False)
     weight = db.Column(db.Float, unique=False, nullable=False)
     payment_id = db.Column(db.String(80), unique=True, nullable=False)
+    # tracking_id= db.Column(db.Integer, unique=True, nullable=False)
     
 
     #relationships
@@ -111,5 +113,5 @@ class Order(db.Model):
              #"email": self.email,
             # do not serialize the password, its a security breach
              "address": self.address,
-             "order_id": self.order_id
+            #  "tracking_id": self.tracking_id
          }
