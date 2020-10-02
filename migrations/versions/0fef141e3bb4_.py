@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 7fce3ab17bb3
+Revision ID: 0fef141e3bb4
 Revises: 
-Create Date: 2020-09-23 00:44:54.395909
+Create Date: 2020-10-01 23:08:18.723433
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7fce3ab17bb3'
+revision = '0fef141e3bb4'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,8 +36,8 @@ def upgrade():
     op.create_table('puzzle',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name_of_puzzle', sa.String(length=50), nullable=False),
-    sa.Column('picture_of_puzzle', sa.LargeBinary(), nullable=True),
-    sa.Column('picture_of_box', sa.LargeBinary(), nullable=True),
+    sa.Column('picture_of_puzzle', sa.String(length=150), nullable=True),
+    sa.Column('picture_of_box', sa.String(length=150), nullable=True),
     sa.Column('number_of_pieces', sa.Integer(), nullable=False),
     sa.Column('age_range', sa.String(length=10), nullable=False),
     sa.Column('category', sa.String(length=50), nullable=False),

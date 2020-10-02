@@ -12,6 +12,15 @@ from models import db, User, Puzzle, Order
 from flask_jwt_simple import (
     JWTManager, jwt_required, create_jwt, get_jwt_identity
 )
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+cloudinary.config( 
+  cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'), 
+  api_key = os.environ.get('CLOUDINARY_API_KEY'), 
+  api_secret = os.environ.get('CLOUDINARY_API_SECRET') 
+)
 
 #from models import Person
 
@@ -150,36 +159,46 @@ def get_puzzle():
     all_puzzles = list(map(lambda x: x.serialize(), all_puzzles))
     return jsonify(all_puzzles), 200
 
-   
-
-# @app.route('/puzzle', methods=['POST'])
-# def create_puzzle():
-
-#     response_body = {
-#         "msg": "Puzzle upload endpoint"
-#     }
-
-#     return jsonify(response_body), 200
 
 @app.route('/puzzle', methods=['POST'])
 def create_puzzle():
+# Get fields from Form Data
+    name_of_puzzle = request.form["name_of_puzzle"] 
+    picture_of_puzzle = request.files["picture_of_puzzle"] 
+    picture_of_box = request.files["picture_of_box"]
+    number_of_pieces = request.form["number_of_pieces"]
+    age_range = request.form["age_range"]
+    category = request.form["category"]
+    owner_id = request.form["owner_id"]
 
-    request_body_puzzle = request.get_json()
 
+    if picture_of_box is not None:
+        # upload box to cloudinary
+        box_upload_result = cloudinary.uploader.upload( picture_of_box )
+    else:
+        return jsonify("Failed to upload picture of box"), 500 
+
+    if picture_of_puzzle is not None:
+        # upload puzzle to cloudinary
+        puzzle_upload_result = cloudinary.uploader.upload( picture_of_puzzle )
+    else:
+        return jsonify("Failed to upload picture of puzzle"), 500 
+
+    # add to db
     newpuzzle = Puzzle(
-    name_of_puzzle=request_body_puzzle["name_of_puzzle"], 
-    picture_of_puzzle=bytes(request_body_puzzle["picture_of_puzzle"], 'utf-8'), 
-    picture_of_box=bytes(request_body_puzzle["picture_of_box"], 'utf-8'), 
-    number_of_pieces=request_body_puzzle["number_of_pieces"], 
-    age_range=request_body_puzzle["age_range"], 
-    category=request_body_puzzle["category"], 
-    owner_id=request_body_puzzle["owner_id"],
-    is_available=request_body_puzzle["is_available"]
+        name_of_puzzle=name_of_puzzle, 
+        picture_of_puzzle=puzzle_upload_result['secure_url'], 
+        picture_of_box=box_upload_result['secure_url'], 
+        number_of_pieces=number_of_pieces, 
+        age_range=age_range, 
+        category=category, 
+        owner_id=owner_id,
+        is_available=True
     )
     db.session.add(newpuzzle)
     db.session.commit()
 
-    return jsonify(request_body_puzzle), 200 
+    return jsonify("successfully added puzzle"), 200 
 
 @app.route('/puzzle', methods=['PUT'])
 def edit_puzzle():
@@ -201,7 +220,30 @@ def delete_puzzle(puzzle_id):
 
     return jsonify("ok"), 200
 
+#   @app.route('/payment', methods=['POST'])
+#   def create_order(self, debug=False):
+#     request = OrdersCreateRequest()
+#     request.prefer('return=representation')
+#     #3. Call PayPal to set up a transaction
+#     request.request_body(self.build_request_body())
+#     response = self.client.execute(request)
+#     if debug:
+#       print 'Status Code: ', response.status_code
+#       print 'Status: ', response.result.status
+#       print 'Order ID: ', response.result.id
+#       print 'Intent: ', response.result.intent
+#       print 'Links:'
+#       for link in response.result.links:
+#         print('\t{}: {}\tCall Type: {}'.format(link.rel, link.href, link.method))
+#       print 'Total Amount: {} {}'.format(response.result.purchase_units[0].amount.currency_code,
+#                          response.result.purchase_units[0].amount.value)
+
+#     return response
+
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT, debug=False)
+
+if __name__ == "__main__":
+  CreateOrder().create_order(debug=True)
