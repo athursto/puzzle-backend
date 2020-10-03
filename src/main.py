@@ -159,8 +159,6 @@ def order_product():
 
 @app.route('/puzzle', methods=['GET'])
 def get_puzzle():
-   
-
     all_puzzles = Puzzle.query.all()
     all_puzzles = list(map(lambda x: x.serialize(), all_puzzles))
     return jsonify(all_puzzles), 200
