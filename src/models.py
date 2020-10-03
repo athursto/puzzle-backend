@@ -91,7 +91,7 @@ class Puzzle(db.Model):
     #     "user": {"name": self.User.full_name,
     #                 "id": self.User.id}
     #      # do not serialize the password, its a security breach
-    #             }
+    #            }
 
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
