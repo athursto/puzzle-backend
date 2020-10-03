@@ -5,10 +5,10 @@ from flask_admin.contrib.sqla import ModelView
 
 class UserView(ModelView):
   def on_model_change(self, form, model, is_created=False):
-        model.picture_of_puzzle = bytes(model.picture_of_puzzle, 'utf-8')
-        model.picture_of_box = bytes(model.picture_of_box, 'utf-8')
+        model.picture_of_puzzle = model.picture_of_puzzle
+        model.picture_of_box = model.picture_of_box
         pass
-    # column_list = ('name_of_puzzle', 'number_of_pieces', 'age_range', 'category','is_available')
+        # column_list = ('name_of_puzzle', 'number_of_pieces', 'age_range', 'category','is_available')
     # form_excluded_columns = ('picture_of_puzzle', 'picture_of_box') # this is how you hide a field from the admin
 
 def setup_admin(app):
