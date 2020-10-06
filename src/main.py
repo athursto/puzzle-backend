@@ -55,6 +55,30 @@ def all_users():
 
     return jsonify(all_users), 200
 
+@app.route('/user/<int:user_id>', methods=['GET'])
+def get_address(user_id):
+
+    # request_body_user = request.get_json()
+
+    user1 = User.query.get(user_id)
+    if user1 is None:
+        raise APIException('User not found', status_code=404)
+
+    # if "full_name" in request_body_user:
+    #     user1.full_name = request_body_user["full_name"]  
+    # if "address" in request_body_user:
+    #     user1.address = request_body_user["address"]
+    # if "city" in request_body_user:
+    #     user1.city = request_body_user["city"] 
+    # if "state" in request_body_user:
+    #     user1.state = request_body_user["state"]
+    # if "zip" in request_body_user:
+    #     user1.zip = request_body_user["zip"]               
+
+    # db.session.commit()
+
+    return jsonify(user1.serialize()), 200      
+
 @app.route('/user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
 
@@ -93,7 +117,7 @@ def delete_user(user_id):
 
     return jsonify("ok"), 200
 
-@app.route('/order/<puzzle_id>', methods=['POST'])
+@app.route('/order/<int:puzzle_id>', methods=['POST'])
 @jwt_required
 def protected():
     # Access the identity of the current user with get_jwt_identity
@@ -159,11 +183,14 @@ def order_product():
 
 @app.route('/puzzle', methods=['GET'])
 def get_puzzle():
-   
-
     all_puzzles = Puzzle.query.all()
     all_puzzles = list(map(lambda x: x.serialize(), all_puzzles))
     return jsonify(all_puzzles), 200
+
+@app.route('/puzzle/<int:puzzle_id>', methods=['GET'])
+def get_one_puzzle():
+    this_puzzle = Puzzle.query.get(puzzle_id)
+    return jsonify(this_puzzle), 200
 
 
 @app.route('/puzzle', methods=['POST'])
