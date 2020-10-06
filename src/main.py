@@ -117,7 +117,7 @@ def delete_user(user_id):
 
     return jsonify("ok"), 200
 
-@app.route('/order/<puzzle_id>', methods=['POST'])
+@app.route('/order/<int:puzzle_id>', methods=['POST'])
 @jwt_required
 def protected():
     # Access the identity of the current user with get_jwt_identity
@@ -183,11 +183,14 @@ def order_product():
 
 @app.route('/puzzle', methods=['GET'])
 def get_puzzle():
-   
-
     all_puzzles = Puzzle.query.all()
     all_puzzles = list(map(lambda x: x.serialize(), all_puzzles))
     return jsonify(all_puzzles), 200
+
+@app.route('/puzzle/<int:puzzle_id>', methods=['GET'])
+def get_one_puzzle():
+    this_puzzle = Puzzle.query.get(puzzle_id)
+    return jsonify(this_puzzle), 200
 
 
 @app.route('/puzzle', methods=['POST'])
