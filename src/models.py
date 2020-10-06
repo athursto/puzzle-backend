@@ -9,7 +9,7 @@ class User(db.Model):
   address = db.Column(db.String(120), nullable=False)
   city = db.Column(db.String(80), nullable=False)
   state = db.Column(db.String(80), nullable=False)
-  zip_code = db.Column(db.Integer, nullable=False)
+  zip = db.Column(db.Integer, nullable=False)
   email = db.Column(db.String(120), unique=True, nullable=False)
   username = db.Column(db.String(80), unique=True, nullable=False)
   password = db.Column(db.String(80), unique=False, nullable=False)
@@ -34,6 +34,10 @@ class User(db.Model):
       return {
           "id": self.id,
           "full_name": self.full_name,
+          "address": self.address,
+          "city": self.city,
+          "state": self.state,
+          "zip": self.zip,
           "email": self.email,
           "username": self.username,
           "puzzles_owned": list(map(lambda x: x.serialize(), self.puzzles_owned))

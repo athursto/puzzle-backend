@@ -55,6 +55,30 @@ def all_users():
 
     return jsonify(all_users), 200
 
+@app.route('/user/<int:user_id>', methods=['GET'])
+def get_address(user_id):
+
+    # request_body_user = request.get_json()
+
+    user1 = User.query.get(user_id)
+    if user1 is None:
+        raise APIException('User not found', status_code=404)
+
+    # if "full_name" in request_body_user:
+    #     user1.full_name = request_body_user["full_name"]  
+    # if "address" in request_body_user:
+    #     user1.address = request_body_user["address"]
+    # if "city" in request_body_user:
+    #     user1.city = request_body_user["city"] 
+    # if "state" in request_body_user:
+    #     user1.state = request_body_user["state"]
+    # if "zip" in request_body_user:
+    #     user1.zip = request_body_user["zip"]               
+
+    # db.session.commit()
+
+    return jsonify(user1.serialize()), 200      
+
 @app.route('/user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
 
